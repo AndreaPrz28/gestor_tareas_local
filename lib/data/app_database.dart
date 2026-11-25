@@ -44,7 +44,7 @@ class AppDatabase extends _$AppDatabase {
 
   /// Un solo punto de apertura para las seis plataformas:
   /// - Android, iOS, Windows, Linux y macOS: archivo `gestor_tareas.sqlite`
-  ///   en la carpeta de soporte de la app (path_provider), vía dart:ffi.
+  ///   en la carpeta de documentos de la app (path_provider), vía dart:ffi.
   /// - Web: sqlite3 compilado a WebAssembly; el archivo se guarda en OPFS o
   ///   IndexedDB según lo que soporte el navegador.
   static QueryExecutor _abrirConexion() {
