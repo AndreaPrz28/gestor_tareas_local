@@ -39,12 +39,43 @@ class TareasRepository {
     return _db.into(_db.tareas).insert(TareasCompanion.insert(titulo: limpio));
   }
 
+  // ---------- UPDATE ----------
+
+  Future<void> editarTitulo(int id, String nuevoTitulo) async {
+    final limpio = _validar(nuevoTitulo);
+    final afectadas = await (_db.update(_db.tareas)
+          ..where((t) => t.id.equals(id)))
+        .write(TareasCompanion(titulo: Value(limpio)));
+    _verificarExistencia(afectadas, id);
+  }
+
+  Future<void> cambiarEstado(int id, bool completada) async {
+    final afectadas = await (_db.update(_db.tareas)
+          ..where((t) => t.id.equals(id)))
+        .write(TareasCompanion(completada: Value(completada)));
+    _verificarExistencia(afectadas, id);
+  }
+
+  // ---------- DELETE ----------
+
+  Future<void> eliminar(int id) async {
+    final afectadas =
+        await (_db.delete(_db.tareas)..where((t) => t.id.equals(id))).go();
+    _verificarExistencia(afectadas, id);
+  }
+
   // ---------- Auxiliares ----------
 
   String _validar(String titulo) {
     final error = validarTitulo(titulo);
     if (error != null) throw TituloInvalidoException(error);
     return titulo.trim();
+  }
+
+  void _verificarExistencia(int filasAfectadas, int id) {
+    if (filasAfectadas == 0) {
+      throw StateError('No existe una tarea con id $id.');
+    }
   }
 
   Tarea _aModelo(TareaFila fila) => Tarea(

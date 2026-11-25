@@ -23,4 +23,4 @@ Se usará **Drift** con **drift_flutter**:
 
 - [x] Apertura de la base persistente (`lib/data/app_database.dart`)
 - [x] Alta y consulta reactiva de tareas (`lib/data/tareas_repository.dart`)
-- [ ] Edición, cambio de estado y eliminación
+- [x] Edición, cambio de estado y eliminación con confirmación y mensajes de error
