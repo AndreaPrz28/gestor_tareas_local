@@ -3,6 +3,7 @@ name: CI multiplataforma
 on:
   push:
     branches: [main]
+    tags: ['v*']
   workflow_dispatch:
 
 permissions:
@@ -31,11 +32,13 @@ jobs:
           GH_TOKEN: ${{ github.token }}
       - id: commit
         name: Guardar archivos generados
+        env:
+          ES_RAMA: ${{ github.ref_type == 'branch' }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
-          if ! git diff --cached --quiet; then
+          if [ "$ES_RAMA" = "true" ] && ! git diff --cached --quiet; then
             git commit -m "ci: archivos generados por flutter create, pub, build_runner y recursos web"
             git push origin HEAD:${{ github.ref_name }}
           fi
@@ -132,3 +135,24 @@ jobs:
         with:
           name: gestor_tareas_android
           path: build/app/outputs/flutter-apk/app-release.apk
+
+  release:
+    name: Publicar release con ejecutables
+    if: github.ref_type == 'tag'
+    needs: [pruebas, windows, android]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artefactos
+      - name: Crear release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd artefactos
+          (cd gestor_tareas_windows && zip -qr ../gestor_tareas_windows.zip .)
+          cp gestor_tareas_android/app-release.apk gestor_tareas_android.apk
+          gh release create "${{ github.ref_name }}" -R "${{ github.repository }}" \
+            --title "Gestor de tareas ${{ github.ref_name }}" \
+            --notes "Ejecutables compilados por GitHub Actions: Windows (zip, ejecutar gestor_tareas_local.exe) y Android (APK). Versión web: https://andreaprz28.github.io/gestor_tareas_local/" \
+            gestor_tareas_windows.zip gestor_tareas_android.apk
