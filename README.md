@@ -18,3 +18,9 @@ Se usará **Drift** con **drift_flutter**:
 | `titulo` | TEXT | No nulo, no vacío |
 | `completada` | INTEGER (0/1) | Booleano, falso por defecto |
 | `creada_en` | INTEGER (fecha) | Fecha de creación |
+
+## Avance
+
+- [x] Apertura de la base persistente (`lib/data/app_database.dart`)
+- [x] Alta y consulta reactiva de tareas (`lib/data/tareas_repository.dart`)
+- [ ] Edición, cambio de estado y eliminación
