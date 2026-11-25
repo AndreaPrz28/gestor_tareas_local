@@ -1,5 +1,7 @@
 # Gestor de tareas local (Flutter + SQLite con Drift)
 
+**Alumna:** Andrea Guadalupe Perez Jimenez · ID 530918 · Programación de Dispositivos Móviles
+
 Aplicación Flutter que guarda tareas en una base **SQLite local**, sin servidor ni conexión a internet. Se usa la misma base de código para web, móvil y escritorio.
 
 ## Tecnología de persistencia elegida
