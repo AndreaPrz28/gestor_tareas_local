@@ -3,7 +3,6 @@ name: CI multiplataforma
 on:
   push:
     branches: [main]
-    tags: ['v*']
   workflow_dispatch:
 
 permissions:
@@ -138,7 +137,7 @@ jobs:
 
   release:
     name: Publicar release con ejecutables
-    if: github.ref_type == 'tag'
+    if: contains(github.event.head_commit.message, '[release]')
     needs: [pruebas, windows, android]
     runs-on: ubuntu-latest
     steps:
@@ -152,7 +151,7 @@ jobs:
           cd artefactos
           (cd gestor_tareas_windows && zip -qr ../gestor_tareas_windows.zip .)
           cp gestor_tareas_android/app-release.apk gestor_tareas_android.apk
-          gh release create "${{ github.ref_name }}" -R "${{ github.repository }}" \
-            --title "Gestor de tareas ${{ github.ref_name }}" \
+          gh release create "v1.0.${{ github.run_number }}" -R "${{ github.repository }}" --target "${{ github.sha }}" \
+            --title "Gestor de tareas v1.0.${{ github.run_number }}" \
             --notes "Ejecutables compilados por GitHub Actions: Windows (zip, ejecutar gestor_tareas_local.exe) y Android (APK). Versión web: https://andreaprz28.github.io/gestor_tareas_local/" \
             gestor_tareas_windows.zip gestor_tareas_android.apk
